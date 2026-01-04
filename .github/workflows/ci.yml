@@ -25,6 +25,6 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          docker build -t my-vue-app .
-          docker tag my-vue-app:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/my-vue-app:latest
+          docker build -t demonuxtproject0135 .
+          docker tag demonuxtproject0135:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/my-vue-app:latest
           docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/my-vue-app:latest
