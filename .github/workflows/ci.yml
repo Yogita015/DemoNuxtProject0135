@@ -1,46 +1,30 @@
-name: Nuxt CI + Docker ECR
+name: Deploy Vue App to AWS
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build Nuxt project
-        run: npm run build
-
-      # -----------------------------
-      # Docker + ECR steps start here
-      # -----------------------------
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-north-1
+          aws-access-key-id: ${{ secrets.YOGI_AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.YOGI_AWS_SECRET_KEY }}
+          aws-region: us-east-1
 
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build Docker image
-        run: docker build -t demo-nuxt:latest .
-
-      - name: Tag Docker image
-        run: docker tag demo-nuxt:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-north-1.amazonaws.com/demo-nuxt:latest
-
-      - name: Push Docker image to ECR
-        run: docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-north-1.amazonaws.com/demo-nuxt:latest
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t my-vue-app .
+          docker tag my-vue-app:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/my-vue-app:latest
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/my-vue-app:latest
