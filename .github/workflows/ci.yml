@@ -28,3 +28,11 @@ jobs:
           docker build -t demonuxtproject0135 .
           docker tag demonuxtproject0135:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-north-1.amazonaws.com/demonuxtproject0135:latest
           docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-north-1.amazonaws.com/demonuxtproject0135:latest
+
+      - name: Deploy CloudFormation Stack
+        run: |
+          aws cloudformation deploy \
+            --template-file cloudformation.yml \
+            --stack-name vue-ecs-stack \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --parameter-overrides AwsAccountId=${{ secrets.AWS_ACCOUNT_ID }}
