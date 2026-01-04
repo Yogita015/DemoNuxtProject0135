@@ -4,7 +4,7 @@ Description: Vue.js app deployment using ECS Fargate
 Parameters:
   AwsAccountId:
     Type: String
-    Description: AWS Account ID (from GitHub Secret)
+    Description: AWS Account ID (passed from GitHub Secret)
 
 Resources:
 
@@ -54,7 +54,7 @@ Resources:
       ExecutionRoleArn: !GetAtt ECSTaskExecutionRole.Arn
       ContainerDefinitions:
         - Name: vue-container
-          Image: !Sub "${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-north-1.amazonaws.com/latest:latest"
+          Image: !Sub "${AwsAccountId}.dkr.ecr.eu-north-1.amazonaws.com/demonuxtproject0135:latest"
           PortMappings:
             - ContainerPort: 80
           Essential: true
